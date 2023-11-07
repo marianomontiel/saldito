@@ -56,8 +56,6 @@ function settleUp() {
             if (!balances[person]) {
                 balances[person] = 0;
             }
-            //I need to add a way for payer balances to be taken into account even if the payer doesn't consume the bill he payed for
-
             if (!bill.participants.includes(bill.payer)) {
                 if (person !== bill.payer) {
                     balances[person] += perPersonAmount;
@@ -66,9 +64,9 @@ function settleUp() {
                 }
             } else {
                 console.log("el filtro funca")
-                //modificar este codigo
                 balances[person] += perPersonAmount;
                 balances[bill.payer] -= bill.amount;
+                
             }
 
         });
