@@ -47,7 +47,7 @@ function settleUp() {
             payer = bill.querySelector('.payer').value;
         return { name, amount, participants, payer };
     });
-    
+
     const balances = {};
 
     bills.forEach(bill => {
@@ -57,11 +57,20 @@ function settleUp() {
                 balances[person] = 0;
             }
             //I need to add a way for payer balances to be taken into account even if the payer doesn't consume the bill he payed for
-            if (person !== bill.payer) {
+
+            if (!bill.participants.includes(bill.payer)) {
+                if (person !== bill.payer) {
+                    balances[person] += perPersonAmount;
+                } else if (person === bill.payer) {
+                    balances[person] -= bill.amount - perPersonAmount;
+                }
+            } else {
+                console.log("el filtro funca")
+                //modificar este codigo
                 balances[person] += perPersonAmount;
-            } else if (person === bill.payer){
-                balances[person] -= bill.amount - perPersonAmount;
+                balances[bill.payer] -= bill.amount;
             }
+
         });
     });
 
@@ -70,12 +79,12 @@ function settleUp() {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = '<h2>Settlement:</h2>';
 
-/*     Object.keys(balances).forEach(person => {
-        if (balances[person] !== 0) {
-            const message = balances[person] > 0 ? `owes $${balances[person]} to ${"""return all negative balances[person]"""}` : `is owed $${Math.abs(balances[person])}`;
-            resultDiv.innerHTML += `<p>${person} ${message}</p>`;
-        }
-    }); */
+    /*     Object.keys(balances).forEach(person => {
+            if (balances[person] !== 0) {
+                const message = balances[person] > 0 ? `owes $${balances[person]} to ${"""return all negative balances[person]"""}` : `is owed $${Math.abs(balances[person])}`;
+                resultDiv.innerHTML += `<p>${person} ${message}</p>`;
+            }
+        }); */
 
     Object.keys(balances).forEach(person => {
         if (balances[person] !== 0) {
@@ -85,7 +94,7 @@ function settleUp() {
                 const debtors = Object.keys(balances).filter(
                     debtor => balances[debtor] < 0 && person !== debtor
                 );
-    
+
                 if (debtors.length != null) {
                     const debtList = debtors.map(debtor => `${debtor}`).join(', ');
                     console.log(debtList)
@@ -96,5 +105,5 @@ function settleUp() {
             }
         }
     });
-    
+
 }
