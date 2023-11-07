@@ -23,16 +23,16 @@ function addBill() {
     let billHTML = `
         <div class="bill">
             <label for="billName">Bill Name:</label>
-            <input type="text" class="billName" placeholder="Enter bill name">
+            <input type="text" class="billName" placeholder="Enter bill name" value="pizza">
 
             <label for="billAmount">Bill Amount:</label>
-            <input type="number" class="billAmount" placeholder="Enter amount">
+            <input type="number" class="billAmount" placeholder="Enter amount" value="90">
 
             <label for="billParticipants">Participants:</label>
-            <input type="text" class="billParticipants" placeholder="Enter participant names">
+            <input type="text" class="billParticipants" placeholder="Enter participant names" value="a,b">
 
             <label for="payer">Payer:</label>
-            <input type="text" class="payer" placeholder="Enter who paid the bill">
+            <input type="text" class="payer" placeholder="Enter who paid the bill" value="a">
         </div>
     `;
     document.getElementById('billsList').insertAdjacentHTML('beforeend', billHTML);
@@ -53,11 +53,13 @@ function settleUp() {
     bills.forEach(bill => {
         const perPersonAmount = bill.amount / bill.participants.length;
         bill.participants.forEach(person => {
+            if (!balances[person]) {
+                balances[person] = 0;
+            }
             if (person !== bill.payer) {
-                if (!balances[person]) {
-                    balances[person] = 0;
-                }
                 balances[person] += perPersonAmount;
+            } else if (person === bill.payer){
+                balances[person] -= bill.amount;
             }
         });
     });
