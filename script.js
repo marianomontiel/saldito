@@ -1,6 +1,7 @@
 let participants = [];
 let bills = [];
 
+//Create participants array (it doesn't do anything yet. However, it is important for future data validation)
 function addParticipants() {
     const participantsInput = document.getElementById('participants').value;
     participants = participantsInput.split(',').map(participant => participant.trim());
@@ -26,6 +27,7 @@ function addBill() {
     document.getElementById('billsList').insertAdjacentHTML('beforeend', billHTML);
 }
 
+
 function settleUp() {
     participants = document.getElementById('participants').value.split(',').map(name => name.trim());
     bills = Array.from(document.querySelectorAll('.bill')).map(bill => {
@@ -38,6 +40,7 @@ function settleUp() {
 
     const balances = {};
 
+    //Calculate who owes how much, this is the buggy script.
     bills.forEach(bill => {
         const perPersonAmount = bill.amount / bill.participants.length;
         bill.participants.forEach(person => {
@@ -62,16 +65,12 @@ function settleUp() {
 
     console.table(balances);
 
+
+    //Output results to DOM
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = '<h2>Settlement:</h2>';
 
-    /*     Object.keys(balances).forEach(person => {
-            if (balances[person] !== 0) {
-                const message = balances[person] > 0 ? `owes $${balances[person]} to ${"""return all negative balances[person]"""}` : `is owed $${Math.abs(balances[person])}`;
-                resultDiv.innerHTML += `<p>${person} ${message}</p>`;
-            }
-        }); */
-
+    //Determine who is the lender and who is the borrower then output to DOM
     Object.keys(balances).forEach(person => {
         if (balances[person] !== 0) {
             if (balances[person] < 0) {
