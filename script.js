@@ -1,6 +1,24 @@
 let participants = [];
 let bills = [];
 
+function addParticipants() {
+    const participantsInput = document.getElementById('participants').value;
+    participants = participantsInput.split(',').map(participant => participant.trim());
+    console.log('Participants:', participants);
+}
+
+/* function addBill() {
+    const billName = prompt('Enter bill name:');
+    const billAmount = parseFloat(prompt('Enter bill amount:'));
+
+    const participantsInvolved = prompt('Enter participants involved (comma-separated):').split(',').map(participant => participant.trim());
+
+    const payer = prompt('Enter who paid the bill:');
+
+    bills.push({ name: billName, amount: billAmount, participants: participantsInvolved, payer: payer });
+    displayBills();
+} */
+
 function addBill() {
     let billHTML = `
         <div class="bill">
@@ -12,6 +30,9 @@ function addBill() {
 
             <label for="billParticipants">Participants:</label>
             <input type="text" class="billParticipants" placeholder="Enter participant names">
+
+            <label for="payer">Payer:</label>
+            <input type="text" class="payer" placeholder="Enter who paid the bill">
         </div>
     `;
     document.getElementById('billsList').insertAdjacentHTML('beforeend', billHTML);
@@ -20,29 +41,50 @@ function addBill() {
 function settleUp() {
     participants = document.getElementById('participants').value.split(',').map(name => name.trim());
     bills = Array.from(document.querySelectorAll('.bill')).map(bill => {
-        const name = bill.querySelector('.billName').value;
-        const amount = parseFloat(bill.querySelector('.billAmount').value);
-        const billParticipants = bill.querySelector('.billParticipants').value.split(',').map(name => name.trim());
-        return { name, amount, billParticipants };
+        const name = bill.querySelector('.billName').value,
+            amount = parseFloat(bill.querySelector('.billAmount').value),
+            participants = bill.querySelector('.billParticipants').value.split(',').map(name => name.trim()),
+            payer = bill.querySelector('.payer').value;
+        return { name, amount, participants, payer };
     });
-
-    let settleUpResult = {};
-
-    participants.forEach(participant => {
-        settleUpResult[participant] = 0;
-    });
+    
+    const balances = {};
 
     bills.forEach(bill => {
-        const billAmountPerParticipant = bill.amount / bill.billParticipants.length;
-        bill.billParticipants.forEach(participant => {
-            settleUpResult[participant] += billAmountPerParticipant;
+        const perPersonAmount = bill.amount / bill.participants.length;
+        bill.participants.forEach(person => {
+            if (person !== bill.payer) {
+                if (!balances[person]) {
+                    balances[person] = 0;
+                }
+                balances[person] += perPersonAmount;
+            }
         });
     });
 
-    let settlementHTML = '<h2>Settlement</h2><ul>';
-    for (const person in settleUpResult) {
-        settlementHTML += `<li>${person} owes ${settleUpResult[person]}.</li>`;
-    }
-    settlementHTML += '</ul>';
-    document.getElementById('settlementList').innerHTML = settlementHTML;
+/*     bills.forEach(bill => {
+        const payer = bill.payer;
+        bill.participants.forEach(person => {
+            if (person !== payer) {
+                if (!balances[person]) {
+                    balances[person] = 0;
+                }
+                balances[person] -= bill.amount / (bill.participants.length - 1);
+                if (!balances[payer]) {
+                    balances[payer] = 0;
+                }
+                balances[payer] += bill.amount / (bill.participants.length - 1);
+            }
+        });
+    }); */
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '<h2>Settlement:</h2>';
+
+    Object.keys(balances).forEach(person => {
+        if (balances[person] !== 0) {
+            const message = balances[person] > 0 ? `owes $${balances[person]}` : `is owed $${Math.abs(balances[person])}`;
+            resultDiv.innerHTML += `<p>${person} ${message}</p>`;
+        }
+    });
 }
