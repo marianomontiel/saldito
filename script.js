@@ -7,32 +7,20 @@ function addParticipants() {
     console.log('Participants:', participants);
 }
 
-/* function addBill() {
-    const billName = prompt('Enter bill name:');
-    const billAmount = parseFloat(prompt('Enter bill amount:'));
-
-    const participantsInvolved = prompt('Enter participants involved (comma-separated):').split(',').map(participant => participant.trim());
-
-    const payer = prompt('Enter who paid the bill:');
-
-    bills.push({ name: billName, amount: billAmount, participants: participantsInvolved, payer: payer });
-    displayBills();
-} */
-
 function addBill() {
     let billHTML = `
         <div class="bill">
             <label for="billName">Bill Name:</label>
-            <input type="text" class="billName" placeholder="Enter bill name" value="pizza">
+            <input type="text" class="billName" placeholder="Enter bill name">
 
             <label for="billAmount">Bill Amount:</label>
-            <input type="number" class="billAmount" placeholder="Enter amount" value="90">
+            <input type="number" class="billAmount" placeholder="Enter amount">
 
             <label for="billParticipants">Participants:</label>
-            <input type="text" class="billParticipants" placeholder="Enter participant names" value="a,b">
+            <input type="text" class="billParticipants" placeholder="Enter participant names">
 
             <label for="payer">Payer:</label>
-            <input type="text" class="payer" placeholder="Enter who paid the bill" value="a">
+            <input type="text" class="payer" placeholder="Enter who paid the bill">
         </div>
     `;
     document.getElementById('billsList').insertAdjacentHTML('beforeend', billHTML);
