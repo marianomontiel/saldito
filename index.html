@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bill Splitting App</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bill Splitting App</h1>
+        <div id="participantsSection">
+            <label for="participants">Enter Participant Names (Separated by Commas):</label>
+            <input type="text" id="participants" placeholder="Enter names">
+        </div>
+        <div id="billsSection">
+            <h2>Bills</h2>
+            <div id="billsList"></div>
+            <button onclick="addBill()">Add Bill</button>
+        </div>
+        <button onclick="settleUp()">Settle Up</button>
+        <div id="settlementList"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
