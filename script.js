@@ -56,37 +56,45 @@ function settleUp() {
             if (!balances[person]) {
                 balances[person] = 0;
             }
+            //I need to add a way for payer balances to be taken into account even if the payer doesn't consume the bill he payed for
             if (person !== bill.payer) {
                 balances[person] += perPersonAmount;
             } else if (person === bill.payer){
-                balances[person] -= bill.amount;
+                balances[person] -= bill.amount - perPersonAmount;
             }
         });
     });
 
-/*     bills.forEach(bill => {
-        const payer = bill.payer;
-        bill.participants.forEach(person => {
-            if (person !== payer) {
-                if (!balances[person]) {
-                    balances[person] = 0;
-                }
-                balances[person] -= bill.amount / (bill.participants.length - 1);
-                if (!balances[payer]) {
-                    balances[payer] = 0;
-                }
-                balances[payer] += bill.amount / (bill.participants.length - 1);
-            }
-        });
-    }); */
+    console.table(balances);
 
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = '<h2>Settlement:</h2>';
 
-    Object.keys(balances).forEach(person => {
+/*     Object.keys(balances).forEach(person => {
         if (balances[person] !== 0) {
-            const message = balances[person] > 0 ? `owes $${balances[person]}` : `is owed $${Math.abs(balances[person])}`;
+            const message = balances[person] > 0 ? `owes $${balances[person]} to ${"""return all negative balances[person]"""}` : `is owed $${Math.abs(balances[person])}`;
             resultDiv.innerHTML += `<p>${person} ${message}</p>`;
         }
+    }); */
+
+    Object.keys(balances).forEach(person => {
+        if (balances[person] !== 0) {
+            if (balances[person] < 0) {
+                resultDiv.innerHTML += `<p>${person} is owed $${-balances[person]}</p>`;
+            } else {
+                const debtors = Object.keys(balances).filter(
+                    debtor => balances[debtor] < 0 && person !== debtor
+                );
+    
+                if (debtors.length != null) {
+                    const debtList = debtors.map(debtor => `${debtor}`).join(', ');
+                    console.log(debtList)
+                    resultDiv.innerHTML += `<p>${person} owes $${Math.abs(balances[person])} to ${debtList}</p>`;
+                } /* else {
+                    resultDiv.innerHTML += `<p>${person} owes $${Math.abs(balances[person])}</p>`;
+                } */
+            }
+        }
     });
+    
 }
